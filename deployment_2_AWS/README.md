@@ -3,25 +3,33 @@
 
 Si se accede al servidor web indicando la **dirección IP del servidor** en lugar del nombre de dominio, se deberá carga la práctica realizada en el módulo de **React o React Avanzado**.
 
+> Comenzamos ...
 
+- [Práctica 2 : enunciado](#práctica-2--enunciado)
+    - [Instalo `node` en servidor](#instalo-node-en-servidor)
+    - [Dependencias `react-nodepop` \& `build` en local](#dependencias-react-nodepop--build-en-local)
+    - [Configuro `Nginx` (servidor web, proxy inverso y balanceador de carga)](#configuro-nginx-servidor-web-proxy-inverso-y-balanceador-de-carga)
+    - [Configuro `PM2` como gestor de procesos](#configuro-pm2-como-gestor-de-procesos)
+    - [Instalo `nodepop-api`](#instalo-nodepop-api)
+    - [`Nginx` como un proxy inverso](#nginx-como-un-proxy-inverso)
+    - [Archivos estáticos de la aplicación](#archivos-estáticos-de-la-aplicación)
+
+---
 
 > [!NOTE]
-> **Frontend** :   
-> `react-nodepop`  
+> **Frontend** :   `react-nodepop`  
 > Es una aplicación de tipo dashboard que será la interfaz gráfica desde la que podremos gestionar el API de anuncios Nodepop. Una vez compilado, tu puedes ver nodepop-react en el browser. Local: http://localhost:3000.  
 > En el archivo **.env** está la ruta del acceso al cliente api REACT_APP_API_BASE_URL=http://localhost:3001
 > 
-> **Backend** :  
-> `nodepop-api`  https://github.com/davidjj76/nodepop-api   
+> **Backend** :  `nodepop-api`  https://github.com/davidjj76/nodepop-api   
 > nodepop-api está enganchada a una base de datos Sqlite para que no sea una problema en la instalación de base de datos.  
 > Una vez en marcha, tendremos nuestro backend corriendo en el puerto 3001 (configurable via archivo .env). Tenéis disponible un swagger en la ruta **/swagger** donde podréis probar los diferentes endpoints y ver cómo pasar los datos en las peticiones.
 >
 
-> Comenzamos...
+---
 
 
-
-
+<br>
 
 `nodepop-api` es una API construida con NestJS, un framework de Node.js para construir aplicaciones del lado del servidor eficientes y escalables. Dado que NestJS se ejecuta en Node.js, es imprescindible tener Node.js instalado para ejecutar la aplicación, instalar dependencias y correr scripts definidos en package.json, como los de construcción, desarrollo, y pruebas.
 
