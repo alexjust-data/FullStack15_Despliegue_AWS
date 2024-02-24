@@ -2,16 +2,18 @@
 
 
 
-####  **Caso 1 :** [Despliegue `Fund. backend con Node`](deployment_1_AWS)
+####  **Caso 1 :** [`Fund. backend con Node`](deployment_1_AWS)
 * [GitHub solución Backend con Node](https://github.com/alexjust-data/FullStack15_Despliegue_AWS/tree/main/deployment_1_AWS/backend_node)
 * URL desplegada : http://www.tsis.ai/  
 * X-Owner:AlexJustData http://www.tsis.ai/images/anuncios/bici.jpg
 
-  
-#### **Caso 2 :** [Despliegue `Fund. React`](deployment_2_AWS)
+
+
+#### **Caso 2 :** [`Fund. React`](deployment_2_AWS)
 * [GitHub solución React](https://github.com/alexjust-data/FullStack15_Despliegue_AWS/tree/main/deployment_2_AWS/react-nodepop)
 * URL desplegada : http://18.206.229.12/
 
+<br>
 
 ---
 > [!NOTE]
