@@ -12,6 +12,7 @@
 #### **Caso 2 :** [`Fund. React`](deployment_2_AWS)
 * [GitHub solución React](https://github.com/alexjust-data/FullStack15_Despliegue_AWS/tree/main/deployment_2_AWS/react-nodepop)
 * URL desplegada : http://18.206.229.12/
+* Puedes crearte un usuario para acceder [aquí](http://18.206.229.12/swagger/#/auth/AuthController_signup).
 
 <br>
 
