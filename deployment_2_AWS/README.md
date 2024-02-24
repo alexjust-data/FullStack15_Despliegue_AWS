@@ -7,11 +7,11 @@ Si se accede al servidor web indicando la **dirección IP del servidor** en luga
 > [!NOTE]
 > Se van a cargar al servidor dos aplicaciones
 > 
-> **Frontend** :   `react-nodepop`  
+> **Frontend** :   [`react-nodepop`](https://github.com/alexjust-data/FullStack15_Despliegue_AWS/tree/main/deployment_2_AWS/react-nodepop)  
 > Es una aplicación de tipo dashboard que será la interfaz gráfica desde la que podremos gestionar el API de anuncios Nodepop. Una vez compilado, tu puedes ver nodepop-react en el browser. Local: http://localhost:3000.  
 > En el archivo **.env** está la ruta del acceso al cliente api REACT_APP_API_BASE_URL=http://localhost:3001
 > 
-> **Backend** :  `nodepop-api`  https://github.com/davidjj76/nodepop-api   
+> **Backend** :  [`nodepop-api`]( https://github.com/davidjj76/nodepop-api)   
 > nodepop-api está enganchada a una base de datos Sqlite para que no sea una problema en la instalación de base de datos.  
 > Una vez en marcha, tendremos nuestro backend corriendo en el puerto 3001 (configurable via archivo .env). Tenéis disponible un swagger en la ruta **/swagger** donde podréis probar los diferentes endpoints y ver cómo pasar los datos en las peticiones.
 >
