@@ -2,6 +2,8 @@
 
 
 1. [Práctica 1 : enunciado](Practica_1_enunciado)  
+    I. [Creo usuario y bloqueo su acceso](#creo-usuario-y-bloqueo-su-acceso)
+    II.
 
 
 2. [Práctica 1 : enunciado](Practica_2_enunciado)  
@@ -12,7 +14,7 @@
 
 
 
-### Práctica 1 : enunciado
+## Práctica 1 : enunciado
 ```sh
 ➜  z_DevOps ssh -i DevOps.pem ubuntu@34.228.68.224
         The authenticity of host '34.228.68.224 (34.228.68.224)' can't be established.
