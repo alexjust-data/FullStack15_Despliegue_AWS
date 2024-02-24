@@ -4,7 +4,6 @@
 Se trata de hacer un despliegue de la app llamada [backend_node](https://github.com/alexjust-data/FullStack15_Despliegue_AWS/tree/main/deployment_1_AWS/backend_node) construida con Node.js y Express, optimizada para servir plataformas web mediante una API RESTful. Utiliza MongoDB para la gestión de datos, enfocándose en el rendimiento y la escalabilidad, alta disponibilidad y una base de datos robusta.
 
 > [!NOTE]
-> La arquitectura :
 >
 >Se utiliza `node` como servidor de aplicación utilizando `PM2` o supervisor como gestor de procesos node para que siempre esté en ejecución. La aplicación node deberá reiniciarse automáticamente al arrancar el servidor (en el startup).
 >
