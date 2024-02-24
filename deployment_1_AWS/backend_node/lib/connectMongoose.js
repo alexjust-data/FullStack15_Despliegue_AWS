@@ -11,7 +11,11 @@ mongoose.connection.once('open', function () {
   console.info('Connected to mongodb.');
 });
 
-const connectionPromise = mongoose.connect('mongodb://127.0.0.1/nodepop', {
+// Usamos la variable de entorno MONGODB_URI. Si no está definida, usamos una dirección predeterminada.
+const mongoDBUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1/nodepop';
+
+const connectionPromise = mongoose.connect(mongoDBUri, {
+  useNewUrlParser: true,
   useUnifiedTopology: true
 });
 

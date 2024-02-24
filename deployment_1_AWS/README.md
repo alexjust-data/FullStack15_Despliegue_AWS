@@ -127,14 +127,23 @@ ubuntu@ip-172-31-93-26:~$ ps aux | grep pm2
 
 ```sh
 # cargo app de local a ubuntu
-➜  z_DevOps scp -r -i Devops.pem backend_node ubuntu@34.228.68.224:/home/ubuntu 
+➜  z_DevOps scp -r -i _DevOps_.pem deployment_1_AWS/backend_node ubuntu@18.206.229.12:/home/ubuntu 
 
-ubuntu@ip-172-31-93-26:~$ ls -l
-total 16
-    drwxr-xr-x  8 ubuntu ubuntu 4096 Feb 23 12:25 backend_node
-    -rw-rw-r--  1 ubuntu ubuntu  750 Feb 23 08:27 ecosystem.config.js
-    drwxrwxr-x 10 ubuntu ubuntu 4096 Feb 22 18:37 nodepop-api
-    -rw-rw-r--  1 ubuntu ubuntu   85 Feb 23 09:05 package-lock.json
+ubuntu@ip-172-31-93-26:~$ ls -l backend_node/
+    total 220
+    -rw-r--r-- 1 ubuntu ubuntu   1897 Feb 24 11:10 README.md
+    -rw-r--r-- 1 ubuntu ubuntu    326 Feb 24 11:10 anuncios.json
+    -rw-r--r-- 1 ubuntu ubuntu   2051 Feb 24 11:10 app.js
+    drwxr-xr-x 2 ubuntu ubuntu   4096 Feb 24 11:10 bin
+    -rw-r--r-- 1 ubuntu ubuntu   1294 Feb 24 11:10 initDB.js
+    drwxr-xr-x 2 ubuntu ubuntu   4096 Feb 24 11:10 lib
+    -rw-r--r-- 1 ubuntu ubuntu     98 Feb 24 11:10 local_config.js
+    drwxr-xr-x 2 ubuntu ubuntu   4096 Feb 24 11:10 models
+    -rw-r--r-- 1 ubuntu ubuntu 175034 Feb 24 11:10 package-lock.json
+    -rw-r--r-- 1 ubuntu ubuntu    736 Feb 24 11:10 package.json
+    drwxr-xr-x 4 ubuntu ubuntu   4096 Feb 24 11:10 public
+    drwxr-xr-x 3 ubuntu ubuntu   4096 Feb 24 11:10 routes
+    drwxr-xr-x 2 ubuntu ubuntu   4096 Feb 24 11:10 views
 
 # hago propietario a alex
 ubuntu@ip-172-31-93-26:~$ sudo chown -R alex:alex backend_node/
@@ -163,13 +172,13 @@ ubuntu@ip-172-31-93-26:~$ curl -fsSL https://www.mongodb.org/static/pgp/server-7
    --dearmor
 
 # copiando los paquetes de mongo en el archivo para instalarlo
-echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+ubuntu@ip-172-31-93-26:~$ echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
 
 # recarga base de datos del paquete, actualiza
-sudo apt-get update
+ubuntu@ip-172-31-93-26:~$ sudo apt-get update
 
 # instalando mongo
-sudo apt-get install -y mongodb-org
+ubuntu@ip-172-31-93-26:~$ sudo apt-get install -y mongodb-org
 
 # arrancando mongo
 ubuntu@ip-172-31-81-69:~$ sudo systemctl start mongod
@@ -198,7 +207,7 @@ switched to db admin
 admin> db.createUser(
 ...   {
 ...     user: "admin",
-...     pwd: "6y1axb",
+...     pwd:  "*****",
 ...     roles: [
 ...       { role: "userAdminAnyDatabase", db: "admin" },
 ...       { role: "readWriteAnyDatabase", db: "admin" }
@@ -220,12 +229,13 @@ ubuntu@ip-172-31-93-26:~$ sudo nano /etc/mongod.conf
 # reinicio
 ubuntu@ip-172-31-93-26:~$ sudo systemctl restart mongod
 ubuntu@ip-172-31-93-26:~$ sudo systemctl status mongod
-● mongod.service - MongoDB Database Server
-     Loaded: loaded (/lib/systemd/system/mongod.service; disabled; vendor preset: enabled)
-     Active: active (running) since Fri 2024-02-23 11:24:00 UTC; 5s ago
+    ● mongod.service - MongoDB Database Server
+        Loaded: loaded (/lib/systemd/system/mongod.service; disabled; vendor preset: enabled)
+        Active: active (running) since Fri 2024-02-23 11:24:00 UTC; 5s ago
 ```
 
 #### Creando base de datos para app `backend_node` en Mongodb
+
 ```sh
 # Cada app debe tener acceso a su base de datos de mongo
 ubuntu@ip-172-31-93-26:~$ mongosh --authenticationDatabase admin -u admin -p
@@ -240,50 +250,19 @@ ubuntu@ip-172-31-93-26:~$ mongosh --authenticationDatabase admin -u admin -p
         config   60.00 KiB
         local    40.00 KiB
 
-    test> use backend_node_db
-        switched to db backend_node_db
-
-    backend_node_db> db.createUser(
-        ...   {
-        ...     user: "user1",
-        ...     pwd:  "user1password",
-        ...     roles: [ { role: "readWrite", db: "backend_node_db" }]
-        ...   }
-        ... )
-    { ok: 1 }
-
-    backend_node_db> exit
-
-
-ubuntu@ip-172-31-93-26:~$ mongosh --authenticationDatabase backend_node_db -u user1 -p
-    Enter password: *************
-
-    test> use backend_node_db
-        switched to db backend_node_db
-    backend_node_db> show collections
-
-    backend_node_db> 
-```
-
-creando bd `nodepop`
-
-```sh
-ubuntu@ip-172-31-93-26:~$ mongosh --authenticationDatabase admin -u admin -p
-Enter password: ******
-
     test> use nodepop
     switched to db nodepop
     nodepop> db.createUser(
             {
                 user: "user2",
-                pwd:"user2password",
+                pwd:  "*****",
                 roles: [ { role: "readWrite", db: "nodepop" }]
             }
         )
     { ok: 1 }
-    nodepop> 
-
-
+    nodepop> exit
+```
+```sh
 # reinicio
 ubuntu@ip-172-31-93-26:~$ sudo systemctl restart mongod
 ubuntu@ip-172-31-93-26:~$ sudo systemctl status mongod
@@ -292,18 +271,32 @@ ubuntu@ip-172-31-93-26:~$ sudo systemctl status mongod
         Active: active (running) since Fri 2024-02-23 11:24:00 UTC; 5s ago
 ```
 
-
-
-#### `Nginx` configuración
+Que mongo se reinicie siempre
 
 ```sh
+ubuntu@ip-172-31-93-26:~$ sudo systemctl enable mongod
+
+    Created symlink /etc/systemd/system/multi-user.target.wants/mongod.service → /lib/systemd/system/mongod.service.
+```
+
+
+#### `Nginx` (servidor web, proxy inverso y balanceador de carga)
+
+```sh
+# instalando nginx
+ubuntu@ip-172-31-93-26:~$ sudo apt-get install nginx
+ubuntu@ip-172-31-93-26:~$ sudo reboot
+
+# Abriendo puertos en el servidor
+# HTTP 80 : 0.0.0.0/0
+
 # establecemos la direccion dns
 ubuntu@ip-172-31-93-26:~$ cd /etc/nginx/sites-available
 ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ sudo nano backend_node
 
         server {
             listen 80;
-            server_name ec2-34-228-68-224.compute-1.amazonaws.com;
+            server_name ec2-18-206-229-12.compute-1.amazonaws.com;
 
             location / {
                 proxy_pass http://localhost:3000;
@@ -318,11 +311,28 @@ ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ sudo nano backend_node
 # Habilitar la Configuración
 ubuntu@ip-172-31-93-26:~$ sudo ln -s /etc/nginx/sites-available/backend_node /etc/nginx/sites-enabled/
 
-# recargando nginx
-ubuntu@ip-172-31-93-26:~$ sudo systemctl reload nginx
+# compruebo
+ubuntu@ip-172-31-93-26:~$ cat /etc/nginx/sites-enabled/backend_node 
+server {
+    listen 80;
+    server_name ec2-18-206-229-12.compute-1.amazonaws.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
 ubuntu@ip-172-31-93-26:~$ sudo nginx -t
     nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
     nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+# reload nginx
+ubuntu@ip-172-31-93-26:~$ sudo systemctl reload nginx
 ```
 
 #### `pm2`
@@ -335,125 +345,43 @@ alex@ip-172-31-93-26:~$ pm2 init simple
 
 alex@ip-172-31-93-26:~$ ls -l
     total 8
-    drwxr-xr-x 8 alex alex 4096 Feb 23 12:25 backend_node
-    -rw-rw-r-- 1 alex alex   83 Feb 23 14:40 ecosystem.config.js
+    drwxr-xr-x 9 alex alex 4096 Feb 24 11:13 backend_node
+    -rw-rw-r-- 1 alex alex   83 Feb 24 11:35 ecosystem.config.js
+    -rw-rw-r-- 1 alex alex   83 Feb 24 11:13 package-lock.json
 
 # creando archivo
 alex@ip-172-31-93-26:~$ nano ecosystem.config.js
     GNU nano 6.2 ecosystem.config.js *
 
     module.exports = {
-    apps: [{
-        name: 'backend_node',
-        script: 'node ./bin/www', // o 'npm' y en args: 'start'
-        cwd: '/home/alex/backend_node'
-    }]
-    };
-
-    # module.exports = {
-    # apps: [{
-    #     name: 'backend_node',
-    #     script: './bin/www',
-    #     env: {
-    #         MONGODB_URI: 'mongodb://user1:user1password@127.0.0.1/backend_node_db'
-    #     }
-    # }]
-    # };
-
-# pm2 start ecosystem.config.js
-```
-
-#### Problemas encontrados
-
-Dado que no puedo modificar el codigo de la app y no se como conectar la app con mongo
-
-```sh
-alex@ip-172-31-93-26:~$ nano ~/.bashrc
-
-        # ~/.bashrc: executed by bash(1) for non-login shells.
-        # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-        # for examples
-
-        export MONGODB_URI='mongodb://user2:user1password@127.0.0.1/nodepop'
-
-        # If not running interactively, don't do anything
-
-alex@ip-172-31-93-26:~$ source ~/.bashrc
-alex@ip-172-31-93-26:~$ echo $MONGODB_URI
-        mongodb://user1:user1password@127.0.0.1/backend_node_db
-
-alex@ip-172-31-93-26:~$ nano ecosystem.config.js 
-
-        module.exports = {
-        apps : [{
-            name: 'backend_node',
+        apps: [{
+            name:   'backend_node',
             script: 'node ./bin/www',
-            cwd: '/home/alex/backend_node',
+            cwd:    '/home/alex/backend_node',
             env: {
-                "NODE_ENV": "development",
-                "MONGODB_URI": "mongodb://user2:user2password@127.0.0.1/nodepop"
+                    MONGODB_URI: 'mongodb://user2:*******@127.0.0.1/nodepop' 
             }
         }]
-        };
+    };
+
+alex@ip-172-31-93-26:~$ pm2 start ecosystem.config.js
+    [PM2][WARN] Applications backend_node not running, starting...
+┌────┬─────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name            │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼─────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ backend_node    │ default     │ N/A     │ fork    │ 1092     │ 0s     │ 0    │ online    │ 0%       │ 27.5mb   │ alex     │ disabled │
 
 ```
 
+
+
+#### `statics files` 
 ```sh
-ubuntu@ip-172-31-93-26:~$ sudo systemctl status mongod
-● mongod.service - MongoDB Database Server
-     Loaded: loaded (/lib/systemd/system/mongod.service; disabled; vendor preset: enabled)
-     Active: active (running) since Fri 2024-02-23 18:52:00 UTC; 26s ago
-
-ubuntu@ip-172-31-93-26:~$ ps aux |grep mongo
-mongodb     5784  3.7 15.1 2635156 147584 ?      Ssl  18:51   0:01 /usr/bin/mongod --config /etc/mongod.conf
-ubuntu      5840  0.0  0.2   7008  2304 pts/2    S+   18:52   0:00 grep --color=auto mongo
-```
-
-NOTA : acabé modificando el archivo `/lib/connectMongoose.js`
-
-```js
-'use strict';
-
-const mongoose = require('mongoose');
-
-mongoose.connection.on('error', function (err) {
-  console.error('mongodb connection error:', err);
-  process.exit(1);
-});
-
-mongoose.connection.once('open', function () {
-  console.info('Connected to mongodb.');
-});
-
-// Usamos la variable de entorno MONGODB_URI. Si no está definida, usamos una dirección predeterminada.
-const mongoDBUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1/nodepop';
-
-const connectionPromise = mongoose.connect(mongoDBUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
-// exportamos la promesa de la conexión (https://mongoosejs.com/docs/connections.html)
-module.exports = connectionPromise;
-
-```
-
-#### Que mongo se reinicie siempre
-
-```sh
-ubuntu@ip-172-31-93-26:~$ sudo systemctl enable mongod
-
-    Created symlink /etc/systemd/system/multi-user.target.wants/mongod.service → /lib/systemd/system/mongod.service.
-```
-
-#### archivos estáticos de la aplicación
-
-```sh
-ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ sudo nano backend_node 
+ubuntu@ip-172-31-93-26:~$ sudo nano /etc/nginx/sites-available/backend_node 
 
         server {
             listen 80;
-            server_name ec2-34-228-68-224.compute-1.amazonaws.com;
+            server_name ec2-18-206-229-12.compute-1.amazonaws.com;
 
             location / {
                 proxy_pass http://localhost:3000;
@@ -462,8 +390,7 @@ ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ sudo nano backend_node
                 proxy_set_header Connection 'upgrade';
                 proxy_set_header Host $host;
                 proxy_cache_bypass $http_upgrade;
-                proxy_hide_header X-Powered-By;  # Add this line to remove the header
-            }
+            } 
 
             location ~ ^/(images|stylesheets|css|img|sounds|fonts|js)/ {
                 root /home/alex/backend_node/public;
@@ -503,21 +430,59 @@ ubuntu@ip-172-31-93-26:/etc/nginx/sites-enabled$ cat backend_node
             }
         }
 
+ubuntu@ip-172-31-93-26:~$ sudo rm -rf /etc/nginx/sites-enabled/backend_node
+ubuntu@ip-172-31-93-26:~$ sudo ln -s /etc/nginx/sites-available/backend_node /etc/nginx/sites-enabled/
+ubuntu@ip-172-31-93-26:~$ cat /etc/nginx/sites-enabled/backend_node
 
+        server {
+            listen 80;
+            server_name ec2-18-206-229-12.compute-1.amazonaws.com;
 
-ubuntu@ip-172-31-93-26:/etc/nginx/sites-enabled$ sudo rm backend_node
-ubuntu@ip-172-31-93-26:/etc/nginx/sites-enabled$ sudo ln -s /etc/nginx/sites-available/backend_node /etc/nginx/sites-enabled/
-ubuntu@ip-172-31-93-26:/etc/nginx/sites-enabled$ sudo nginx -t
-        nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-        nginx: configuration file /etc/nginx/nginx.conf test is successful
-ubuntu@ip-172-31-93-26:/etc/nginx/sites-enabled$ sudo systemctl reload nginx
+            location / {
+                proxy_pass http://localhost:3000;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+            }
+
+            location ~ ^/(images|stylesheets|css|img|sounds|fonts|js)/ {
+                root /home/alex/backend_node/public;
+                access_log off;
+                expires max;
+                add_header X-Owner AlexJustData;
+            }
+        }
+
+ubuntu@ip-172-31-93-26:~$ sudo nginx -t
+    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    nginx: configuration file /etc/nginx/nginx.conf test is successful
+ubuntu@ip-172-31-93-26:~$ sudo systemctl reload nginx
 ```
 
-#### para comprimir los estáticos
+#### comprimiendo archivos estáticos
 
 ```sh
-ubuntu@ip-172-31-39-104:/etc/nginx$ sudo nano nginx.conf
+ubuntu@ip-172-31-93-26:~$ sudo nano /etc/nginx/nginx.conf
 
-# Descomenta esta linea de nano
-gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/java>
+    GNU nano 6.2  
+# Descomenta esta linea 
+gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+```
+
+Dado que Nginx suele ejecutarse bajo el usuario www-data o similar, el servidor web actualmente no tiene permiso para leer o acceder a los archivos dentro de /home/alex debido a la falta de permisos para "otros usuarios".
+
+```sh
+ubuntu@ip-172-31-93-26:~$ sudo ls -l /home
+    total 8
+    drwxr-x--- 7 alex   alex   4096 Feb 24 11:48 alex
+    drwxr-x--- 6 ubuntu ubuntu 4096 Feb 24 11:17 ubuntu
+
+# ajustando permisos
+ubuntu@ip-172-31-93-26:~$ sudo chmod o+rx /home/alex
+ubuntu@ip-172-31-93-26:~$ ls -l /home
+    total 8
+    drwxr-xr-x 7 alex   alex   4096 Feb 24 11:48 alex
+    drwxr-x--- 6 ubuntu ubuntu 4096 Feb 24 11:17 ubuntu
 ```
