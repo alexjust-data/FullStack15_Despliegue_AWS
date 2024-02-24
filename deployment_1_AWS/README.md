@@ -466,6 +466,7 @@ ubuntu@ip-172-31-93-26:~$ cat /etc/nginx/sites-enabled/backend_node
 ubuntu@ip-172-31-93-26:~$ sudo nginx -t
     nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
     nginx: configuration file /etc/nginx/nginx.conf test is successful
+
 ubuntu@ip-172-31-93-26:~$ sudo systemctl reload nginx
 ```
 
@@ -503,7 +504,7 @@ ubuntu@ip-172-31-93-26:~$ sudo nano /etc/nginx/sites-available/backend_node
 
         server {
             listen 80;
-            server_name 1.tsis.ai;
+            server_name tsis.ai www.tsis.ai;
 
             location / {
                 proxy_pass http://localhost:3000;
@@ -523,25 +524,30 @@ ubuntu@ip-172-31-93-26:~$ sudo nano /etc/nginx/sites-available/backend_node
         }
 
 
-ubuntu@ip-172-31-93-26:~$ sudo systemctl restart nginx
+ubuntu@ip-172-31-93-26:~$ sudo rm -rf /etc/nginx/sites-enabled/backend_node
+ubuntu@ip-172-31-93-26:~$ sudo ln -s /etc/nginx/sites-available/backend_node /etc/nginx/sites-enabled/
+ubuntu@ip-172-31-93-26:~$ sudo nginx -t
+    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    nginx: configuration file /etc/nginx/nginx.conf test is successful
+ubuntu@ip-172-31-93-26:~$ sudo systemctl reload nginx
 ```
 ---
 > [!IMPORTANT]
-> http://1.tsis.ai/ -> funciona correctamente
+> http://tsis.ai/ -> funciona correctamente
 ---
 
 #### Mejoras
 
-Cuando el usuario accede a http://1.tsis.ai/ se encuentra con una página principal parecido a un `readme.md` y desde ahí un link para acceder a la app. Cuando se carga esta página inicial no se cumple con el enunciado de esta práctica ya que se cargan archivos css donde el owner no es X-Owner:AlexJustData. esto se debe a que se ejecutan solo desde el *root /home/alex/backend_node/public;* 
+Cuando el usuario accede a http://tsis.ai/ se encuentra con una página principal parecido a un `readme.md` y desde ahí un link para acceder a la app. Cuando se carga esta página inicial no se cumple con el enunciado de esta práctica ya que se cargan archivos css donde el owner no es X-Owner:AlexJustData. esto se debe a que se ejecutan solo desde el *root /home/alex/backend_node/public;* 
 
-Para solucionar esto y ya que la página de incio no es interesante para nadie más que para desarrolladores, voy a discriminar esta página y comenzacermos directamente desde http://1.tsis.ai/anuncios que es lo interesante para un usuario que visita la web y de esta forma cumple con el enunciado.
+Para solucionar esto y ya que la página de incio no es interesante para nadie más que para desarrolladores, voy a discriminar esta página y comenzacermos directamente desde http://www.tsis.ai/anuncios que es lo interesante para un usuario que visita la web y de esta forma cumple con el enunciado.
 
 ```sh
 ubuntu@ip-172-31-93-26:~$ sudo nano /etc/nginx/sites-available/backend_node 
 
         server {
             listen 80;
-            server_name 1.tsis.ai;
+            server_name tsis.ai;
 
             # Redirige la raíz al path /anuncios
             location = / {
@@ -576,6 +582,8 @@ nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
 ubuntu@ip-172-31-93-26:~$ sudo systemctl reload nginx
 ```
+
+
 
 > [!NOTE]
 > Trabajo terminado...  

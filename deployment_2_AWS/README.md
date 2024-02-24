@@ -324,6 +324,9 @@ ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ sudo nano nodepop-react
             listen 80 default_server;
             server_name _;
 
+            root /var/www/nodepop-react;
+            index index.html;
+
             # Configura la ubicación para la documentación de Swagger
             location /swagger {
                 proxy_pass http://127.0.0.1:3001;
@@ -348,8 +351,6 @@ ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ sudo nano nodepop-react
 
             # Configura la ubicación para tu aplicación frontend React
             location / {
-                root /var/www/nodepop-react;
-                index index.html;
                 try_files $uri $uri/ =404 /index.html;
             }
         }
@@ -369,6 +370,9 @@ ubuntu@ip-172-31-93-26:~$ cat /etc/nginx/sites-enabled/nodepop-react
             listen 80 default_server;
             server_name _;
 
+            root /var/www/nodepop-react;
+            index index.html;
+
             # Configura la ubicación para la documentación de Swagger
             location /swagger {
                 proxy_pass http://127.0.0.1:3001;
@@ -393,8 +397,6 @@ ubuntu@ip-172-31-93-26:~$ cat /etc/nginx/sites-enabled/nodepop-react
 
             # Configura la ubicación para tu aplicación frontend React
             location / {
-                root /var/www/nodepop-react;
-                index index.html;
                 try_files $uri $uri/ =404 /index.html;
             }
         }
