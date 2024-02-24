@@ -1,12 +1,5 @@
 # Despliegues en servidor AWS
 
-> [!NOTE]
-> Instructor : Alberto Casero  
-> alberto@kasfactory.net  
-> https://github.com/kasappeal  
-> [Discord channel](https://discord.com/channels/1112689497642115172/1112689499605049378)
-
----
 
 
 ####  **Caso 1 :** [Despliegue `Fund. backend con Node`](deployment_1_AWS)
@@ -19,4 +12,11 @@
 * [GitHub solución React](https://github.com/alexjust-data/FullStack15_Despliegue_AWS/tree/main/deployment_2_AWS/react-nodepop)
 * [URL desplegada]()
 
+
+---
+> [!NOTE]
+> Instructor : Alberto Casero  
+> alberto@kasfactory.net  
+> https://github.com/kasappeal  
+> [Discord channel](https://discord.com/channels/1112689497642115172/1112689499605049378)
 
