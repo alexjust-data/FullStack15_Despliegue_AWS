@@ -1,12 +1,10 @@
 
-
-
-
-### Despliegue app en Servidor AWS
+## Despliegue app en Servidor AWS
 
 Se trata de hacer un despliegue de la app llamada [backend_node]((https://github.com/alexjust-data/FullStack15_Despliegue_AWS/tree/main/deployment_1_AWS/backend_node)) que está construida con Node.js y Express, optimizada para servir plataformas web mediante una API RESTful. Utiliza MongoDB para la gestión de datos, enfocándose en el rendimiento y la escalabilidad, lo que la convierte en una solución ideal para proyectos que requieren alta disponibilidad y una base de datos robusta.
 
-> **Arquitectura** :
+> [!NOTE]
+> La arquitectura :
 >
 >Se utiliza `node` como servidor de aplicación utilizando `PM2` o supervisor como gestor de procesos node para que siempre esté en ejecución. La aplicación node deberá reiniciarse automáticamente al arrancar el servidor (en el startup).
 >
@@ -14,14 +12,24 @@ Se trata de hacer un despliegue de la app llamada [backend_node]((https://github
 > 
 > Los archivos estáticos de la aplicación (imágenes, css, etc.) son servidos por nginx (no por node). Para poder diferenciar quién sirve estos estáticos, se añade una cabecera HTTP cuando se sirven estáticos cuyo valor es: X-Owner (la X- indica que es una cabecera personalizada) y el valor de la cabecera es mi nombre de usuario de la cuenta en github.
 > 
-> ---
+> 
 
-<br>
+> Comenzamos ...
 
-Pasos
-1. [Creo usuario y bloqueo su acceso](#creo-usuario-y-bloqueo-su-acceso)
-2. [Instalo `node` en servidor](#)
-3. [Configuro `PM2` como gestor de procesos](#)
+
+- [Despliegue app en Servidor AWS](#despliegue-app-en-servidor-aws)
+    - [Creo usuario `alex` y bloqueo su acceso](#creo-usuario-alex-y-bloqueo-su-acceso)
+    - [Instalo `node` en servidor](#instalo-node-en-servidor)
+    - [Configuro `PM2` como gestor de procesos](#configuro-pm2-como-gestor-de-procesos)
+    - [Cargando la app `backend_node` al servidor](#cargando-la-app-backend_node-al-servidor)
+    - [Configurando `MongoDB`](#configurando-mongodb)
+    - [Creando base de datos para app `backend_node` en Mongodb](#creando-base-de-datos-para-app-backend_node-en-mongodb)
+    - [`Nginx` (servidor web, proxy inverso y balanceador de carga)](#nginx-servidor-web-proxy-inverso-y-balanceador-de-carga)
+    - [`pm2`](#pm2)
+    - [`statics files`](#statics-files)
+    - [comprimiendo `statics files`](#comprimiendo-statics-files)
+    - [Dominio y subdominos `www.tsis.ai`](#dominio-y-subdominos-wwwtsisai)
+    - [Mejoras](#mejoras)
 
 <br>
 
@@ -487,7 +495,7 @@ ubuntu@ip-172-31-93-26:~$ ls -l /home
     drwxr-x--- 6 ubuntu ubuntu 4096 Feb 24 11:17 ubuntu
 ```
 
-#### Dominio y subdominos `1.tsis.ai`
+#### Dominio y subdominos `www.tsis.ai`
 
 ```sh
 ubuntu@ip-172-31-93-26:~$ sudo nano /etc/nginx/sites-available/backend_node 
@@ -572,6 +580,6 @@ ubuntu@ip-172-31-93-26:~$ sudo systemctl reload nginx
 > [!NOTE]
 > Trabajo terminado...  
 > más feliz que una perdiz  
-> **http://1.tsis.ai/**
+> **http://www.tsis.ai/**
 
 
