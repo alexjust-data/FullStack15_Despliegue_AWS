@@ -3,7 +3,7 @@
 
 1. [Práctica 1 : enunciado](Practica_1_enunciado)  
     I. [Creo usuario y bloqueo su acceso](#creo-usuario-y-bloqueo-su-acceso)
-    II.
+    II. [Configurando MongoDB](#configurando-mongodb)
 
 
 2. [Práctica 1 : enunciado](Practica_2_enunciado)  

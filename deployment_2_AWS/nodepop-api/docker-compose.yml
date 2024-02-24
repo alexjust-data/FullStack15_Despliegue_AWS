@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  app:
+    image: davidjj76/nodepop-api
+    build: .
+    container_name: app
+    ports:
+      - ${PORT}:${PORT}
+    restart: unless-stopped
+    volumes:
+      - nodepop-api-data:/home/node/app/data
+      - nodepop-api-uploads:/home/node/app/${UPLOADS_FOLDER}
+volumes:
+  nodepop-api-data:
+  nodepop-api-uploads:

@@ -1,0 +1,6 @@
+{
+  "type": "sqlite",
+  "database": "data/nodepop.sqlite",
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "synchronize": true
+}
