@@ -30,6 +30,7 @@ Se trata de hacer un despliegue de la app llamada [backend_node]((https://github
     - [comprimiendo `statics files`](#comprimiendo-statics-files)
     - [Dominio y subdominos `www.tsis.ai`](#dominio-y-subdominos-wwwtsisai)
     - [Mejoras](#mejoras)
+    - [Certificados de seguridad `htts`](#certificados-de-seguridad-htts)
 
 <br>
 
@@ -583,11 +584,140 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 ubuntu@ip-172-31-93-26:~$ sudo systemctl reload nginx
 ```
 
+#### Certificados de seguridad `htts`
+
+`certbot` instructions : https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal
+
+```sh
+# instalando 
+ubuntu@ip-172-31-93-26:~$ sudo apt install python3-certbot-nginx
+
+# alucina pepinillos...
+ubuntu@ip-172-31-93-26:~$ sudo certbot --nginx
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Enter email address (used for urgent renewal and security notices)
+ (Enter 'c' to cancel): alexjustdata@gmail.com
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please read the Terms of Service at
+https://letsencrypt.org/documents/LE-SA-v1.3-September-21-2022.pdf. You must
+agree in order to register with the ACME server. Do you agree?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: Y
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Would you be willing, once your first certificate is successfully issued, to
+share your email address with the Electronic Frontier Foundation, a founding
+partner of the Let's Encrypt project and the non-profit organization that
+develops Certbot? We'd like to send you email about our work encrypting the web,
+EFF news, campaigns, and ways to support digital freedom.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: N
+Account registered.
+
+Which names would you like to activate HTTPS for?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1: tsis.ai
+2: www.tsis.ai
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Select the appropriate numbers separated by commas and/or spaces, or leave input
+blank to select all options shown (Enter 'c' to cancel): 1 2
+Requesting a certificate for tsis.ai and www.tsis.ai
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/tsis.ai/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/tsis.ai/privkey.pem
+This certificate expires on 2024-05-24.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+Deploying certificate
+Successfully deployed certificate for tsis.ai to /etc/nginx/sites-enabled/backend_node
+Successfully deployed certificate for www.tsis.ai to /etc/nginx/sites-enabled/backend_node
+Congratulations! You have successfully enabled HTTPS on https://tsis.ai and https://www.tsis.ai
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+```
+
+**Deploying certificate**
+* Successfully deployed certificate for `tsis.ai` to /etc/nginx/sites-enabled/backend_node
+* Successfully deployed certificate for `www.tsis.ai` to /etc/nginx/sites-enabled/backend_node
+
+Te ha modifcado cosas:
+
+```sh
+ubuntu@ip-172-31-93-26:~$ cat /etc/nginx/sites-available/backend_node 
+
+        server {
+            server_name tsis.ai www.tsis.ai;
+
+            # Redirige la raíz al path /anuncios
+            location = / {
+                return 301 $scheme://$host/anuncios;
+            }
+
+            # Maneja el path /anuncios y redirige al backend de Node.js
+            location /anuncios {
+                # Ajusta el path para el proxy_pass
+                rewrite ^/anuncios(/.*)$ $1 break;
+                proxy_pass http://localhost:3000;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+            }
+
+            # Sirve archivos estáticos directamente desde el sistema de archivos
+            location ~ ^/(images|stylesheets|css|img|sounds|fonts|js)/ {
+                root /home/alex/backend_node/public;
+                access_log off;
+                expires max;
+                add_header X-Owner AlexJustData;
+            }
+
+            listen 443 ssl; # managed by Certbot
+            ssl_certificate /etc/letsencrypt/live/tsis.ai/fullchain.pem; # managed by Certbot
+            ssl_certificate_key /etc/letsencrypt/live/tsis.ai/privkey.pem; # managed by Certbot
+            include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+            ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+        }
+        server {
+            if ($host = www.tsis.ai) {
+                return 301 https://$host$request_uri;
+            } # managed by Certbot
+
+
+            if ($host = tsis.ai) {
+                return 301 https://$host$request_uri;
+            } # managed by Certbot
+
+
+            listen 80;
+            server_name tsis.ai www.tsis.ai;
+            return 404; # managed by Certbot
+```
+
+> [!IMPORTANT]
+> No tenemos abierto el puerto 443 en el servidor AWS.  
+> Ábrelo...
+
+La vida el bella
+
+
+
 
 
 > [!NOTE]
 > Trabajo terminado...  
 > más feliz que una perdiz  
 > **http://www.tsis.ai/**
+
 
 
