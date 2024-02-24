@@ -31,44 +31,40 @@ Si se accede al servidor web indicando la **dirección IP del servidor** en luga
 
 ```sh
 # instalar NVM (Node Version Manager) 
-ubuntu@ip-172-31-31-200:~$ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+ubuntu@ip-172-31-93-26:~$ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
 # recargo
-ubuntu@ip-172-31-31-200:~$ logout
+ubuntu@ip-172-31-93-26:~$ logout
 
 # instalado NVM (Node Version Manager) 
-ubuntu@ip-172-31-31-200:~$ nvm
+ubuntu@ip-172-31-93-26:~$ nvm
     Node Version Manager (v0.39.7)
 
 # instalando node
-ubuntu@ip-172-31-31-200:~$ nvm install --lts
+ubuntu@ip-172-31-93-26:~$ nvm install --lts
 ```
 
 #### Dependencias `react-nodepop` & `build` en local
 
 ```sh
 # carpeta del proyecto en local con ocultos
-➜  react-nodepop git:(web-xv) ✗ ls -la
-
+➜  z_DevOps git:(main) ✗ la -l  deployment_2_AWS/react-nodepop
 total 2120
-drwxr-xr-x@ 11 alex  staff     352 Feb 23 09:33 .
-drwxr-xr-x@ 11 alex  staff     352 Feb 22 20:19 ..
--rw-r--r--@  1 alex  staff      49 Dec 11 09:52 .env
-drwxr-xr-x@ 13 alex  staff     416 Dec 11 09:52 .git
--rw-r--r--@  1 alex  staff     310 Dec 11 09:51 .gitignore
--rw-r--r--@  1 alex  staff    3362 Dec 11 09:51 README.md
--rw-r--r--@  1 alex  staff  663986 Feb 23 09:33 package-lock.json
--rw-r--r--@  1 alex  staff     902 Dec 11 09:51 package.json
-drwxr-xr-x@  8 alex  staff     256 Dec 11 09:51 public
-drwxr-xr-x@  9 alex  staff     288 Dec 11 09:51 src
--rw-r--r--@  1 alex  staff  397745 Feb 23 09:33 yarn.lock
+-rw-r--r--@   1 alex  staff    48B Feb 23 09:41 .env
+-rw-r--r--@   1 alex  staff   310B Dec 11 09:51 .gitignore
+-rw-r--r--@   1 alex  staff   3.3K Dec 11 09:51 README.md
+-rw-r--r--@   1 alex  staff   648K Feb 23 09:47 package-lock.json
+-rw-r--r--@   1 alex  staff   902B Dec 11 09:51 package.json
+drwxr-xr-x@   8 alex  staff   256B Dec 11 09:51 public
+drwxr-xr-x@   9 alex  staff   288B Dec 11 09:51 src
+-rw-r--r--@   1 alex  staff   388K Feb 23 09:47 yarn.lock
 
 # antes de construir el buil e instalar dependencias
 # cambio la dirección del api con la ip del servidor
 ➜  react-nodepop git:(web-xv) ✗ nano .env
 
     #REACT_APP_API_BASE_URL=http://localhost:3001/api
-    REACT_APP_API_BASE_URL=http://34.228.68.224/api
+    REACT_APP_API_BASE_URL=http://18.206.229.12:3001/api
 
 # instalo dependencias
 ➜  react-nodepop git:(web-xv) ✗ npm install
@@ -79,40 +75,29 @@ drwxr-xr-x@  9 alex  staff     288 Dec 11 09:51 src
         > react-scripts build
 
 # cargando build en servidor
-➜  react-nodepop git:(web-xv) ✗ scp -r -i ../Devops.pem build ubuntu@34.228.68.224:/home/ubuntu
+➜  z_DevOps git:(main) ✗ scp -r -i _DevOps_.pem deployment_2_AWS/react-nodepop/build ubuntu@18.206.229.12:/home/ubuntu
 
-ubuntu@ip-172-31-31-200:~$ ls -l
+ubuntu@ip-172-31-93-26:~$ ls -l
         total 4
         drwxr-xr-x 3 ubuntu ubuntu 4096 Feb 22 15:45 build
 
 # cambio nombre
-ubuntu@ip-172-31-31-200:~$ mv build nodepop-react
-ubuntu@ip-172-31-31-200:~$ ls -l
+ubuntu@ip-172-31-93-26:~$ mv build nodepop-react
+ubuntu@ip-172-31-93-26:~$ ls -l
         total 4
         drwxr-xr-x 3 alex alex 4096 Feb 22 14:37 nodepop-react
 ```
 
-#### Configuro `Nginx` (servidor web, proxy inverso y balanceador de carga)
-
-```sh
-# instalando nginx
-ubuntu@ip-172-31-31-200:~$ sudo apt-get install nginx
-ubuntu@ip-172-31-31-200:~$ sudo reboot
-
-# Abriendo puertos en el servidor
-# HTTP 80 : 0.0.0.0/0
-````
-
 ```sh
 # en `/var/www/` para tener permisos
-ubuntu@ip-172-31-31-200:~$ sudo mv /home/ubuntu/nodepop-react /var/www/
-ubuntu@ip-172-31-31-200:/var/www$ ls -l
+ubuntu@ip-172-31-93-26:~$ sudo mv /home/ubuntu/nodepop-react /var/www/
+ubuntu@ip-172-31-93-26:~$ ls -l /var/www/
     total 8
     drwxr-xr-x 2 root   root   4096 Feb 22 15:53 html
     drwxr-xr-x 3 ubuntu ubuntu 4096 Feb 22 15:45 nodepop-react
 
 # quiero que nginx encuentre index.html
-ubuntu@ip-172-31-31-200:~$ ls -l /var/www/nodepop-react/
+ubuntu@ip-172-31-93-26:~$ ls -l /var/www/nodepop-react/
     total 44
     -rw-r--r-- 1 ubuntu ubuntu  369 Feb 22 15:44 asset-manifest.json
     -rw-r--r-- 1 ubuntu ubuntu 3870 Feb 22 15:44 favicon.ico
@@ -124,45 +109,55 @@ ubuntu@ip-172-31-31-200:~$ ls -l /var/www/nodepop-react/
     drwxr-xr-x 4 ubuntu ubuntu 4096 Feb 22 15:44 static
 ```
 
+#### Configuro `Nginx` (servidor web, proxy inverso y balanceador de carga)
+
+```sh
+# instalando nginx
+ubuntu@ip-172-31-93-26:~$ sudo apt-get install nginx
+ubuntu@ip-172-31-93-26:~$ sudo reboot
+
+# Abriendo puertos en el servidor
+# HTTP 80 : 0.0.0.0/0
+```
+
 React sirve para hacer una SPA single page aplication. No hay gran diferencia entre una página hecha en React a una página estática html. Por eso quiero que apunte a `index.html`. Cuando construimos el build : "It correctly bundles React in production mode and optimizes the build for the best performance" y recoje todo en el index.html.
 
 ```sh
 # configuracion de nginx
-ubuntu@ip-172-31-31-200:$ cd /etc/nginx/sites-available/
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-available$ ls -l
+ubuntu@ip-172-31-93-26:$ cd /etc/nginx/sites-available/
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ ls -l
     total 4
     -rw-r--r-- 1 root root 2412 May 30  2023 default
 
-ubuntu@ip-172-31-31-200:~$ cd /etc/nginx/sites-available
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-available$ sudo nano nodepop-react
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ sudo nano nodepop-react
 
     GNU nano 6.2  /etc/nginx/sites-available/nodepop-react *    
-    server {
-            listen 80;
-            server_name _;
-            root /var/www/nodepop-react;
-            index index.html; # quiero que nginx encuentre index.html
-            location / {
-                    try_files $uri $uri/ =404 /index.html;
-            }
-    }
+server {
+        listen 80;
+        server_name _;
+        root /var/www/nodepop-react;
+        index index.html; # quiero que nginx encuentre index.html
+        location / {
+                try_files $uri $uri/ =404 /index.html;
+        }
+}
 
 # compruebo
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-available$ ls -l
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ ls -l
     total 4
     -rw-r--r-- 1 root root 2412 May 30  2023 default
     -rw-r--r-- 1 root root 206  Feb 22 16:02 nodepop-react
 
 # elimino default porque los dos tienen puerto 80
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-available$ ls
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ ls
     default       # listen 80 default_server;
     nodepop-react # listen 80;
 
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-available$ sudo rm default 
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ sudo rm default 
 
 # activo configuración ~ acceso directo
-ubuntu@ip-172-31-31-200:~$ sudo ln -s /etc/nginx/sites-available/nodepop-react /etc/nginx/sites-enabled/nodepop-react
-ubuntu@ip-172-31-31-200:~$ cat /etc/nginx/sites-enabled/nodepop-react
+ubuntu@ip-172-31-93-26:~$ sudo ln -s /etc/nginx/sites-available/nodepop-react /etc/nginx/sites-enabled/nodepop-react
+ubuntu@ip-172-31-93-26:~$ cat /etc/nginx/sites-enabled/nodepop-react
 
     server {
             listen 80;
@@ -175,26 +170,27 @@ ubuntu@ip-172-31-31-200:~$ cat /etc/nginx/sites-enabled/nodepop-react
     }
 
 # compruebo accesos directos
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-available$ cd /etc/nginx/sites-enabled
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-enabled$ ls -l
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ cd /etc/nginx/sites-enabled
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-enabled$ ls -l
+
     total 0
     lrwxrwxrwx 1 root root 34 Feb 22 09:37 default -> /etc/nginx/sites-available/default
     lrwxrwxrwx 1 root root 40 Feb 22 12:03 nodepop-react -> /etc/nginx/sites-available/nodepop-react
 
 # elimino conexion directa default
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-enabled$ sudo rm default 
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-enabled$ sudo rm default 
 
 # comprovar sintaxi ok!
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-enabled$ sudo nginx -t
-nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-nginx: configuration file /etc/nginx/nginx.conf test is successful
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-enabled$ sudo nginx -t
+
+    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    nginx: configuration file /etc/nginx/nginx.conf test is successful
 
 # recargamos
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-enabled$ sudo systemctl reload nginx
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-enabled$ sudo systemctl reload nginx
 ```
 
-
-http://34.228.68.224/login -> aplicación corriendo en browser
+http://18.206.229.12/login -> aplicación corriendo en browser
 
 Hasta ahora estamos comprovando que la aplicación funciona conectándonos directamente a la aplicación del servidor. No hay ningún intermediario entre el servidor y yo. Este es el paso primero que he de hacer cuando despliego una app:
 
@@ -211,47 +207,51 @@ Configuro Nginx para reenviar solicitudes al puerto de la aplicación React (si 
 
 ```sh
 # instalando pm2
-ubuntu@ip-172-31-31-200:~$ npm install pm2 -g
-ubuntu@ip-172-31-31-200:~$ pm2 -version
+ubuntu@ip-172-31-93-26:~$ npm install pm2 -g
+ubuntu@ip-172-31-93-26:~$ pm2 -version
     5.3.1
 
 # corriendo como un demonio
-ubuntu@ip-172-31-31-200:~$ ps aux | grep pm2
-ubuntu 1416  0.0  2.7 1025932 26772 ?     Ssl  17:28   0:00 PM2 v5.3.1: God Daemon (/home/ubuntu/.pm2)
-ubuntu 1554  0.0  0.2   7004  2304 pts/0  S+   17:47   0:00 grep --color=auto pm2
+ubuntu@ip-172-31-93-26:~$ ps aux | grep pm2
+
+    alex   574  0.0  3.3 1025676 32628 ?       Ssl  16:11   0:00 PM2 v5.3.1: God Daemon (/home/alex/.pm2)
+    ubuntu 2103  3.0  5.7 1028888 55904 ?      Ssl  16:21   0:00 PM2 v5.3.1: God Daemon (/home/ubuntu/.pm2)
+    ubuntu 2115  0.0  0.2   7004  2304 pts/0   S+   16:21   0:00 grep --color=auto pm2
 
 # para que pm2 arranque cuando cae el servidor
-ubuntu@ip-172-31-31-200:~$ pm2 startup
+ubuntu@ip-172-31-93-26:~$ pm2 startup
 
     [PM2] Init System found: systemd
     [PM2] To setup the Startup Script, copy/paste the following command:
     sudo env PATH=$PATH:/home/alex/.nvm/versions/node/v20.11.1/bin /home/alex/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 startup systemd -u alex --hp /home/alex
 
 # creo env
-ubuntu@ip-172-31-31-200:~$ sudo env PATH=$PATH:/home/alex/.nvm/versions/node/v20.11.1/bin /home/alex/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 startup systemd -u alex --hp /home/alex
+ubuntu@ip-172-31-93-26:~$ sudo env PATH=$PATH:/home/alex/.nvm/versions/node/v20.11.1/bin /home/alex/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 startup systemd -u alex --hp /home/alex
 
 # reiniciamos
-ubuntu@ip-172-31-31-200:~$ sudo reboot
-ubuntu@ip-172-31-31-200:~$ ps aux | grep pm2
+ubuntu@ip-172-31-93-26:~$ sudo reboot
+ubuntu@ip-172-31-93-26:~$ ps aux | grep pm2
 
-ubuntu      1406  0.0  0.2   7004  2304 pts/0    S+   17:20   0:00 grep --color=auto pm2
+alex   590  2.8  5.7 1028888 55784 ?       Ssl  16:23   0:00 PM2 v5.3.1: God Daemon (/home/alex/.pm2)
+ubuntu 591  3.0  5.7 1028888 55900 ?       Ssl  16:23   0:00 PM2 v5.3.1: God Daemon (/home/ubuntu/.pm2)
+ubuntu 1054  0.0  0.2   7004  2304 pts/0    S+   16:23   0:00 grep --color=auto pm2
 ```
 
 #### Instalo `nodepop-api`
 
 ```sh
-ubuntu@ip-172-31-31-200:~$ git clone https://github.com/davidjj76/nodepop-api
+ubuntu@ip-172-31-93-26:~$ git clone https://github.com/davidjj76/nodepop-api
     Cloning into 'nodepop-api'...
 
 # instalando paquetes
-ubuntu@ip-172-31-31-200:~/nodepop-api$ npm install
+ubuntu@ip-172-31-93-26:~/nodepop-api$ npm install
     added 1046 packages, and audited 1047 packages in 1m
 
     71 packages are looking for funding
     run `npm fund` for details
 
 # mode development
-ubuntu@ip-172-31-31-200:~/nodepop-api$ npm run start
+ubuntu@ip-172-31-93-26:~/nodepop-api$ npm run start
 
     > nodepop-api@0.0.1 start
     > nest start
@@ -291,7 +291,7 @@ ubuntu@ip-172-31-31-200:~/nodepop-api$ npm run start
 ###############################
 ```
 
-http://34.228.68.224:3001/swagger/ -> está funcionando
+http://18.206.229.12/swagger/ -> está funcionando
 
 
 
@@ -300,16 +300,18 @@ http://34.228.68.224:3001/swagger/ -> está funcionando
 Si lo estás sirviendo como archivos estáticos con Nginx, entonces la configuración de `proxy` para `/` no es necesaria.
 
 ```sh
-ubuntu@ip-172-31-31-200:~$ cd /etc/nginx/sites-available
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-available$ ls -s
-    total 4
-    4 nodepop-react
+ubuntu@ip-172-31-93-26:~$ cd /etc/nginx/sites-available
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ ls -s
+
+    total 8
+    -rw-r--r-- 1 root root 874 Feb 24 15:31 backend_node
+    -rw-r--r-- 1 root root 202 Feb 24 16:14 nodepop-react
 
 # eliminio archivo antiguo
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-available$ sudo rm nodepop-react 
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ sudo rm nodepop-react 
 
 # actualizando para proxy inverso 
-ubuntu@ip-172-31-31-200:/etc/nginx/sites-available$ sudo nano nodepop-react
+ubuntu@ip-172-31-93-26:/etc/nginx/sites-available$ sudo nano nodepop-react
 
         server {
             listen 80 default_server;
@@ -348,13 +350,13 @@ ubuntu@ip-172-31-31-200:/etc/nginx/sites-available$ sudo nano nodepop-react
 
 ```sh
 # elimino archivo simbólico anterior
-ubuntu@ip-172-31-31-200:~$ sudo rm /etc/nginx/sites-enabled/nodepop-react
+ubuntu@ip-172-31-93-26:~$ sudo rm /etc/nginx/sites-enabled/nodepop-react
 
 # creando archivo simbolico actualizado
-ubuntu@ip-172-31-31-200:~$ sudo ln -s /etc/nginx/sites-available/nodepop-react /etc/nginx/sites-enabled/nodepop-react
+ubuntu@ip-172-31-93-26:~$ sudo ln -s /etc/nginx/sites-available/nodepop-react /etc/nginx/sites-enabled/nodepop-react
 
 # confirmando
-ubuntu@ip-172-31-31-200:~$ cat /etc/nginx/sites-enabled/nodepop-react
+ubuntu@ip-172-31-93-26:~$ cat /etc/nginx/sites-enabled/nodepop-react
 
         server {
             listen 80 default_server;
@@ -393,17 +395,18 @@ ubuntu@ip-172-31-31-200:~$ cat /etc/nginx/sites-enabled/nodepop-react
 
 ```sh
 # generando archivo ecosystem.config.js
-ubuntu@ip-172-31-31-200:~$ pm2 init simple
+ubuntu@ip-172-31-93-26:~$ pm2 init simple
+
     File /home/ubuntu/ecosystem.config.js generated
 
-ubuntu@ip-172-31-31-200:~$ ls -l
-total 12
-    -rw-rw-r--  1 ubuntu ubuntu   83 Feb 22 19:05 ecosystem.config.js
-    drwxrwxr-x 10 ubuntu ubuntu 4096 Feb 22 18:37 nodepop-api
-    -rw-rw-r--  1 ubuntu ubuntu   85 Feb 22 17:32 package-lock.json
+ubuntu@ip-172-31-93-26:~$ ls -l
+
+    total 12
+    -rw-rw-r--  1 ubuntu ubuntu   83 Feb 24 16:34 ecosystem.config.js
+    drwxrwxr-x 10 ubuntu ubuntu 4096 Feb 24 16:28 nodepop-api
 
 # edito archivo
-ubuntu@ip-172-31-31-200:~$ nano ecosystem.config.js
+ubuntu@ip-172-31-93-26:~$ nano ecosystem.config.js
 
     module.exports = {
     apps : [
@@ -422,7 +425,7 @@ ubuntu@ip-172-31-31-200:~$ nano ecosystem.config.js
     ]
     };
 
-ubuntu@ip-172-31-31-200:~$ pm2 start ecosystem.config.js
+ubuntu@ip-172-31-93-26:~$ pm2 start ecosystem.config.js
     [PM2] Applying action restartProcessId on app [nodepop-api](ids: [ 0 ])
     [PM2] [nodepop-api](0) ✓
 ┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
@@ -432,18 +435,18 @@ ubuntu@ip-172-31-31-200:~$ pm2 start ecosystem.config.js
 └────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
 
 # haciendo foto
-ubuntu@ip-172-31-31-200:~$ pm2 save
+ubuntu@ip-172-31-93-26:~$ pm2 save
     [PM2] Saving current process list...
     [PM2] Successfully saved in /home/ubuntu/.pm2/dump.pm2
 
 # arranco
-ubuntu@ip-172-31-31-200:~$ pm2 startup
+ubuntu@ip-172-31-93-26:~$ pm2 startup
 [PM2] Init System found: systemd
 [PM2] To setup the Startup Script, copy/paste the following command:
 sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/v20.11.1/bin /home/ubuntu/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
 
 # ejecuto comando PATH
-ubuntu@ip-172-31-31-200:~$ sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/v20.11.1/bin /home/ubuntu/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
+ubuntu@ip-172-31-93-26:~$ sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/v20.11.1/bin /home/ubuntu/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
 ```
 
 http://34.228.68.224/adverts -> funcionando correctamente!!!
@@ -456,9 +459,9 @@ http://34.228.68.224/adverts -> funcionando correctamente!!!
 
 Siempre es buena idea después de hacer cambios en la configuración de servicios como Nginx:
 
-* Verificar el Estado del Servicio: Comprobar que el servicio se está ejecutando correctamente con sudo systemctl status nginx.
-* Probar la Configuración de Nginx: Asegurarse de que la configuración de Nginx es correcta con sudo nginx -t antes de reiniciar el servicio.
-* Revisar los Logs: Mantener una vista en los logs de Nginx con tail -f /var/log/nginx/error.log puede ser útil para atrapar errores inmediatamente después de reiniciar el servicio o intentar acceder a la aplicación.
+* Verificar el Estado del Servicio: Comprobar que el servicio se está ejecutando correctamente con `sudo systemctl status nginx`.
+* Probar la Configuración de Nginx: Asegurarse de que la configuración de Nginx es correcta con `sudo nginx -t` antes de reiniciar el servicio.
+* Revisar los Logs: Mantener una vista en los logs de Nginx con `tail -f /var/log/nginx/error.log` puede ser útil para atrapar errores inmediatamente después de reiniciar el servicio o intentar acceder a la aplicación.
 
 #### Archivos estáticos de la aplicación
 
@@ -468,5 +471,5 @@ La carpeta build (o dist en algunos otros setups) es la que sirves con `Nginx`. 
 
 Dado que cuando ejecutas el comando `npm run build` o `yarn build`, por defecto pone todos los activos estáticos en la carpeta static, tu configuración de Nginx ya debería funcionar correctamente para servir estos archivos, como se indica en la sección location de tu configuración de Nginx:
 
-![](/img/1.png)
+![](/deployment_2_AWS/img/1.png)
 
