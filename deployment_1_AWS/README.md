@@ -1,7 +1,7 @@
 
 ## Despliegue app en Servidor AWS
 
-Se trata de hacer un despliegue de la app llamada [backend_node]((https://github.com/alexjust-data/FullStack15_Despliegue_AWS/tree/main/deployment_1_AWS/backend_node)) que está construida con Node.js y Express, optimizada para servir plataformas web mediante una API RESTful. Utiliza MongoDB para la gestión de datos, enfocándose en el rendimiento y la escalabilidad, lo que la convierte en una solución ideal para proyectos que requieren alta disponibilidad y una base de datos robusta.
+Se trata de hacer un despliegue de la app llamada [backend_node](https://github.com/alexjust-data/FullStack15_Despliegue_AWS/tree/main/deployment_1_AWS/backend_node) construida con Node.js y Express, optimizada para servir plataformas web mediante una API RESTful. Utiliza MongoDB para la gestión de datos, enfocándose en el rendimiento y la escalabilidad, alta disponibilidad y una base de datos robusta.
 
 > [!NOTE]
 > La arquitectura :
@@ -708,16 +708,17 @@ ubuntu@ip-172-31-93-26:~$ cat /etc/nginx/sites-available/backend_node
 > No tenemos abierto el puerto 443 en el servidor AWS.  
 > Ábrelo...
 
-La vida el bella
 
-
+![](../deployment_2_AWS/img/2.png)
 
 
 
 > [!NOTE]
 > Trabajo terminado...  
 > más feliz que una perdiz  
-> **http://www.tsis.ai/**
+> 
+> 
+> **https://www.tsis.ai/**
 
 
 
