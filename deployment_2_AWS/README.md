@@ -602,5 +602,5 @@ La carpeta `/public/` que mencionamos en la configuración de Nginx no se refier
 
 En otras palabras, cuando un cliente solicita http://18.206.229.12/public/image.png, Nginx busca image.png en el directorio que has especificado con la directiva alias en la configuración, que en tu caso es /home/ubuntu/nodepop-api/uploads/.
 
-Ahora, según la estructura de tu servidor que has mostrado, las imágenes que los usuarios cargan aparecen en la carpeta uploads dentro de nodepop-api. Entonces, cuando configuras Nginx con la directiva alias, debes asegurarte de que cualquier solicitud a http://18.206.229.12/public/... busque en realidad dentro de /home/ubuntu/nodepop-api/uploads/.
+Ahora, según la estructura de tu servidor, las imágenes que los usuarios cargan aparecen en la carpeta `uploads` dentro de nodepop-api. Entonces, cuando configuras Nginx con la directiva alias, debes asegurarte de que cualquier solicitud a http://18.206.229.12/public/... busque en realidad dentro de `/home/ubuntu/nodepop-api/uploads/`.
 
