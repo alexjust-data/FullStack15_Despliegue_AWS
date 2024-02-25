@@ -69,7 +69,7 @@ drwxr-xr-x@   9 alex  staff   288B Dec 11 09:51 src
 ➜  react-nodepop git:(web-xv) ✗ nano .env
 
     #REACT_APP_API_BASE_URL=http://localhost:3001/api
-    REACT_APP_API_BASE_URL=http://18.206.229.12:3001/api
+    REACT_APP_API_BASE_URL=http://18.206.229.12/api
 
 # instalo dependencias
 ➜  react-nodepop git:(web-xv) ✗ npm install
@@ -492,45 +492,115 @@ Recuerda también ajustar la configuración de seguridad y acceso según sea nec
 
 
 ```sh
-server {
-    listen 80 default_server;
-    server_name _;
+ubuntu@ip-172-31-93-26:~$ sudo nano /etc/nginx/sites-available/nodepop-react
 
-    root /var/www/nodepop-react;
-    index index.html;
+        server {
+            listen 80 default_server;
+            server_name _;
 
-    # Configura la ubicación para la documentación de Swagger
-    location /swagger {
-        proxy_pass http://127.0.0.1:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_redirect off;
-    }
+            root /var/www/nodepop-react;
+            index index.html;
 
-    # Configura la ubicación para tu API
-    location /api {
-        proxy_pass http://127.0.0.1:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_redirect off;
-    }
+            # Configura la ubicación para la documentación de Swagger
+            location /swagger {
+                proxy_pass http://127.0.0.1:3001;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+                proxy_redirect off;
+            }
 
-    location ~ ^/(images|stylesheets|css|img|sounds|fonts|js)/ {
-        root /home/ubuntu/nodepop-api/uploads;
-        access_log off;
-        expires max;
-        add_header X-Owner AlexJustData;
-    }
+            # Configura la ubicación para tu API
+            location /api {
+                proxy_pass http://127.0.0.1:3001;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+                proxy_redirect off;
+            }
 
-    # Configura la ubicación para tu aplicación frontend React
-    location / {
-        try_files $uri $uri/ =404 /index.html;
-    }
-}
+            location /public/ {         
+                alias /home/ubuntu/nodepop-api/uploads/;
+                access_log off;
+                expires max;
+                add_header X-Owner AlexJustData;
+                try_files $uri $uri/ =404;
+            }
+            
+            # Configura la ubicación para tu aplicación frontend React
+            location / {
+                try_files $uri $uri/ =404 /index.html;
+            }
+        }
+
+ubuntu@ip-172-31-93-26:~$ sudo rm /etc/nginx/sites-enabled/nodepop-react 
+ubuntu@ip-172-31-93-26:~$ sudo ln -s /etc/nginx/sites-available/nodepop-react /etc/nginx/sites-enabled/
+ubuntu@ip-172-31-93-26:~$ sudo nginx -t
+    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+ubuntu@ip-172-31-93-26:~$ sudo systemctl reload nginx
+
+ubuntu@ip-172-31-93-26:~$ cat /etc/nginx/sites-enabled/nodepop-react 
+        server {
+            listen 80 default_server;
+            server_name _;
+
+            root /var/www/nodepop-react;
+            index index.html;
+
+            # Configura la ubicación para la documentación de Swagger
+            location /swagger {
+                proxy_pass http://127.0.0.1:3001;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+                proxy_redirect off;
+            }
+
+            # Configura la ubicación para tu API
+            location /api {
+                proxy_pass http://127.0.0.1:3001;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+                proxy_redirect off;
+            }
+
+            location /public/ {         
+                alias /home/ubuntu/nodepop-api/uploads/;
+                access_log off;
+                expires max;
+                add_header X-Owner AlexJustData;
+                try_files $uri $uri/ =404;
+            }
+            
+            # Configura la ubicación para tu aplicación frontend React
+            location / {
+                try_files $uri $uri/ =404 /index.html;
+            }
+        }
+
+ubuntu@ip-172-31-93-26:~$ sudo chmod o+x /home/ubuntu
+ubuntu@ip-172-31-93-26:~$ sudo chmod o+x /home/ubuntu/nodepop-api
 ```
+
+
+![](/deployment_2_AWS/img/3.png)
+
+cuando se hace la petición a la imagen http://18.206.229.12/public/1708855158712-437600146.png
+
+La carpeta `/public/` que mencionamos en la configuración de Nginx no se refiere a una carpeta física en  servidor, sino a una ruta URI (`try_files $uri $uri/ =404;`) que los clientes (navegadores, aplicaciones, etc.) utilizarán para solicitar recursos estáticos.
+
+En otras palabras, cuando un cliente solicita http://18.206.229.12/public/image.png, Nginx busca image.png en el directorio que has especificado con la directiva alias en la configuración, que en tu caso es /home/ubuntu/nodepop-api/uploads/.
+
+Ahora, según la estructura de tu servidor que has mostrado, las imágenes que los usuarios cargan aparecen en la carpeta uploads dentro de nodepop-api. Entonces, cuando configuras Nginx con la directiva alias, debes asegurarte de que cualquier solicitud a http://18.206.229.12/public/... busque en realidad dentro de /home/ubuntu/nodepop-api/uploads/.
+
