@@ -480,3 +480,57 @@ Dado que cuando ejecutas el comando `npm run build` o `yarn build`, por defecto 
 
 ![](/deployment_2_AWS/img/1.png)
 
+Este enfoque asegura que cuando el frontend haga una petición para obtener imágenes o archivos cargados por el usuario (por ejemplo, una imagen de un anuncio), Nginx pueda servir estos archivos directamente desde la carpeta uploads.
+
+**¿dónde van las imagenes cargadas por el usuario una vez desplegada la app en build y corriendo?**
+
+Por ejemplo, en el [casi 1](https://github.com/alexjust-data/FullStack15_Despliegue_AWS/blob/main/deployment_1_AWS/README.md) donde no se ha creado el build tenemos `root /home/alex/backend_node/public;`. Nuestra aplicación backend tiene `root /home/alex/nodepop-api/uploads;`, fíjate los archivos que ha subido el usuario como están ahí.
+
+Es importante tener en cuenta que esta configuración de Nginx debe ajustarse según la estructura real de tus directorios y la ubicación de tu proyecto en el servidor. Además, asegúrate de que los permisos de la carpeta uploads permitan a Nginx leer los archivos para poder servirlos correctamente.
+
+Recuerda también ajustar la configuración de seguridad y acceso según sea necesario para proteger tu aplicación y los datos de los usuarios.
+
+
+```sh
+server {
+    listen 80 default_server;
+    server_name _;
+
+    root /var/www/nodepop-react;
+    index index.html;
+
+    # Configura la ubicación para la documentación de Swagger
+    location /swagger {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_redirect off;
+    }
+
+    # Configura la ubicación para tu API
+    location /api {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_redirect off;
+    }
+
+    location ~ ^/(images|stylesheets|css|img|sounds|fonts|js)/ {
+        root /home/ubuntu/nodepop-api/uploads;
+        access_log off;
+        expires max;
+        add_header X-Owner AlexJustData;
+    }
+
+    # Configura la ubicación para tu aplicación frontend React
+    location / {
+        try_files $uri $uri/ =404 /index.html;
+    }
+}
+```
